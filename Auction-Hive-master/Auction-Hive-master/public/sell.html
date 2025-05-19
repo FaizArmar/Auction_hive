@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sell Item - Auction Hive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --bright: #ffbe0b;
+      --success: #4caf50;
+      --danger: #f72585;
+      --light: #f8f9fa;
+      --text: #2b2d42;
+      --text-light: #8d99ae;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      background-image: linear-gradient(135deg, rgba(76, 201, 240, 0.1) 0%, rgba(67, 97, 238, 0.1) 100%);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 2.2rem;
+      margin-bottom: 30px;
+      font-weight: 700;
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 4px;
+      background: var(--bright);
+      margin: 15px auto 0;
+      border-radius: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      background-color: white;
+      color: var(--text);
+      font-size: 1rem;
+      transition: all 0.3s;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    button {
+      flex: 1;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #sellBtn {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    #sellBtn:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
+    }
+
+    .back-btn {
+      background-color: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .back-btn:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    #error-message {
+      color: var(--danger);
+      background-color: rgba(247, 37, 133, 0.1);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+      text-align: center;
+    }
+
+    .success-message {
+      color: var(--success);
+      background-color: rgba(76, 175, 80, 0.1);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+      text-align: center;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 20px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sell Your Item</h1>
+    
+    <div class="form-group">
+      <label for="itemName">Item Name</label>
+      <input type="text" id="itemName" placeholder="e.g. A Ball Point Pen" required />
+    </div>
+    
+    <div class="form-group">
+      <label for="itemDesc">Item Description</label>
+      <textarea id="itemDesc" placeholder="Describe your item in detail..." required></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label for="startBid">Starting Bid (₹)</label>
+      <input type="number" id="startBid" placeholder="Enter starting price" required />
+    </div>
+    
+    <div class="form-group">
+      <label for="duration">Auction Duration (hours)</label>
+      <input type="number" id="duration" placeholder="How long should the auction run?" required />
+    </div>
+    
+    <div class="button-group">
+      <button id="sellBtn">List Item for Sale</button>
+      <button class="back-btn" onclick="window.location.href='index.html'">Cancel</button>
+    </div>
+    
+    <div id="error-message"></div>
+    <div id="success-message" class="success-message"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB3I-4nBT08ZFXO-dxdABqmCKa94SBUOgc",
+      authDomain: "auction-hive-c9879.firebaseapp.com",
+      projectId: "auction-hive-c9879",
+      storageBucket: "auction-hive-c9879.appspot.com",
+      messagingSenderId: "558929162744",
+      appId: "1:558929162744:web:a16c038f136a1d6cc3660d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById("sellBtn").addEventListener("click", async () => {
+      const name = document.getElementById("itemName").value.trim();
+      const desc = document.getElementById("itemDesc").value.trim();
+      const startBid = document.getElementById("startBid").value.trim();
+      const duration = document.getElementById("duration").value.trim();
+      const errorMsg = document.getElementById("error-message");
+      const successMsg = document.getElementById("success-message");
+
+      // Hide previous messages
+      errorMsg.style.display = "none";
+      successMsg.style.display = "none";
+
+      // Validate inputs
+      if (!name || !desc || !startBid || !duration) {
+        errorMsg.textContent = "Please fill out all fields!";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      if (isNaN(startBid) || parseFloat(startBid) <= 0) {
+        errorMsg.textContent = "Please enter a valid starting bid amount!";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      if (isNaN(duration) || parseInt(duration) <= 0) {
+        errorMsg.textContent = "Please enter a valid auction duration!";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      try {
+        // Show loading state
+        const sellBtn = document.getElementById("sellBtn");
+        sellBtn.disabled = true;
+        sellBtn.textContent = "Listing Item...";
+
+        const now = new Date();
+        const endTime = new Date(now.getTime() + parseInt(duration) * 60 * 60 * 1000);
+
+        await addDoc(collection(db, "auctions"), {
+          title: name,
+          description: desc,
+          startingBid: parseFloat(startBid),
+          startTime: now.toISOString(),
+          endTime: endTime.toISOString(),
+          sellerPhone: "916302656221",
+          createdAt: serverTimestamp(),
+          status: "active"
+        });
+
+        // Show success message
+        successMsg.textContent = "Item listed successfully! Redirecting to WhatsApp...";
+        successMsg.style.display = "block";
+
+        // Redirect to WhatsApp with confirmation
+        const message = `*New Auction Listing*\n\n` +
+                        `*Item Name*: ${name}\n` +
+                        `*Description*: ${desc}\n` +
+                        `*Starting Bid*: ₹${startBid}\n` +
+                        `*Duration*: ${duration} hours\n\n` +
+                        `Thank you for using Auction Hive!`;
+        
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/916302656221?text=${encodedMessage}`;
+        
+        // Small delay to let user see success message
+        setTimeout(() => {
+          window.open(whatsappUrl, "_blank");
+          sellBtn.disabled = false;
+          sellBtn.textContent = "List Item for Sale";
+        }, 1500);
+
+      } catch (e) {
+        errorMsg.textContent = "Error listing item: " + e.message;
+        errorMsg.style.display = "block";
+        
+        // Reset button state
+        const sellBtn = document.getElementById("sellBtn");
+        sellBtn.disabled = false;
+        sellBtn.textContent = "List Item for Sale";
+      }
+    });
+  </script>
+</body>
+</html>

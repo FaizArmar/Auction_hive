@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auction Hive - Live Auctions</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+  <style>
+    /* Bright and cheerful color palette */
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --light: #f8f9fa;
+      --bright: #ffbe0b;
+      --success: #4caf50;
+      --text: #2b2d42;
+      --text-light: #8d99ae;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      max-width: 1400px;
+      width: 95%;
+      margin: 40px auto;
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+      text-align: center;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    h1:after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: var(--bright);
+      margin: 15px auto 30px;
+      border-radius: 2px;
+    }
+
+    .auctions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .auction-item {
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .auction-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(67, 97, 238, 0.15);
+    }
+
+    .auction-image-container {
+      height: 220px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .auction-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .auction-item:hover .auction-image {
+      transform: scale(1.05);
+    }
+
+    .auction-details {
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .auction-item h3 {
+      color: var(--secondary);
+      font-size: 1.5rem;
+      margin: 0 0 12px 0;
+      font-weight: 600;
+    }
+
+    .auction-item p {
+      color: var(--text-light);
+      font-size: 1rem;
+      margin: 6px 0;
+      line-height: 1.5;
+    }
+
+    .auction-meta {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .meta-item svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+      fill: var(--primary);
+    }
+
+    .bid-container {
+      margin-top: auto;
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px dashed #e0e0e0;
+    }
+
+    .current-bid {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.3rem;
+    }
+
+    .current-bid span {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      font-weight: 400;
+      display: block;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(67, 97, 238, 0.2);
+    }
+
+    button:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
+    }
+
+    .back-btn {
+      display: block;
+      margin: 40px auto 0;
+      padding: 14px 28px;
+      background-color: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .no-auctions {
+      text-align: center;
+      padding: 60px 20px;
+      grid-column: 1 / -1;
+    }
+
+    .no-auctions svg {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+      fill: var(--text-light);
+      opacity: 0.5;
+    }
+
+    .no-auctions h2 {
+      color: var(--text-light);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .time-remaining {
+      color: var(--bright);
+      font-weight: 600;
+      background: rgba(255, 190, 11, 0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .tag {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: var(--bright);
+      color: var(--text);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        width: 90%;
+      }
+      
+      h1 {
+        font-size: 2.2rem;
+      }
+      
+      .auctions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Live Auctions</h1>
+    <div id="auctionList" class="auctions-grid"></div>
+    <button class="back-btn" onclick="window.location.href='index.html'">
+      ← Back to Home
+    </button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyB3I-4nBT08ZFXO-dxdABqmCKa94SBUOgc",
+      authDomain: "auction-hive-c9879.firebaseapp.com",
+      projectId: "auction-hive-c9879",
+      storageBucket: "auction-hive-c9879.appspot.com",
+      messagingSenderId: "558929162744",
+      appId: "1:558929162744:web:a16c038f136a1d6cc3660d"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+  
+    const auctionList = document.getElementById("auctionList");
+  
+    // Function to calculate time remaining
+    function getTimeRemaining(endTime) {
+      const now = new Date();
+      const end = new Date(endTime);
+      const diff = end - now;
+      
+      if (diff <= 0) return "Auction ended";
+      
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      return `${hours}h ${minutes}m left`;
+    }
+  
+    // Real-time updates using onSnapshot
+    onSnapshot(collection(db, "Auctions"), (querySnapshot) => {
+      auctionList.innerHTML = "";  // Clear current auctions
+      
+      if (querySnapshot.empty) {
+        auctionList.innerHTML = `
+          <div class="no-auctions">
+            <svg viewBox="0 0 24 24">
+              <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+            </svg>
+            <h2>No live auctions right now</h2>
+            <p>Check back soon for exciting new items!</p>
+          </div>
+        `;
+      } else {
+        querySnapshot.forEach((doc) => {
+          const auctionData = doc.data();
+          const auctionDiv = document.createElement("div");
+          auctionDiv.className = "auction-item";
+          
+          auctionDiv.innerHTML = `
+            <div class="auction-image-container">
+              ${auctionData.imageUrl ? 
+                `<img src="${auctionData.imageUrl}" alt="${auctionData.title}" class="auction-image">` : 
+                `<div class="auction-image" style="background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 1rem;">No Image Available</div>`
+              }
+              <span class="tag">Live</span>
+            </div>
+            <div class="auction-details">
+              <h3>${auctionData.title}</h3>
+              <p>${auctionData.description}</p>
+              
+              <div class="auction-meta">
+                <div class="meta-item">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M3,6H21V18H3V6M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M7,8A1,1 0 0,1 8,9A1,1 0 0,1 7,10A1,1 0 0,1 6,9A1,1 0 0,1 7,8M17,8A1,1 0 0,1 18,9A1,1 0 0,1 17,10A1,1 0 0,1 16,9A1,1 0 0,1 17,8Z" />
+                  </svg>
+                  ${auctionData.category || 'General'}
+                </div>
+                <div class="meta-item">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" />
+                  </svg>
+                  <span class="time-remaining">${getTimeRemaining(auctionData.endTime)}</span>
+                </div>
+              </div>
+              
+              <div class="bid-container">
+                <div class="current-bid">
+                  ₹${auctionData.currentBid || auctionData.startingBid}
+                  <span>Current bid</span>
+                </div>
+                <button onclick="window.location.href='bid.html?id=${doc.id}'">Place Bid</button>
+              </div>
+            </div>
+          `;
+          
+          auctionList.appendChild(auctionDiv);
+        });
+      }
+    }, (error) => {
+      console.error("Error fetching auctions: ", error);
+      auctionList.innerHTML = `
+        <div class="no-auctions">
+          <svg viewBox="0 0 24 24">
+            <path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" />
+          </svg>
+          <h2>Oops! Something went wrong</h2>
+          <p>We couldn't load the auctions. Please try again later.</p>
+        </div>
+      `;
+    });
+  </script>  
+</body>
+</html>

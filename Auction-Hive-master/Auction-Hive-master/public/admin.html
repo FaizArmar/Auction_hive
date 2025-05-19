@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auction Hive - Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Bright and cheerful color palette */
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --light: #f8f9fa;
+      --bright: #ffbe0b;
+      --success: #4caf50;
+      --danger: #f72585;
+      --text: #2b2d42;
+      --text-light: #8d99ae;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 900px;
+      overflow-y: auto;
+      max-height: 90vh;
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+      text-align: center;
+      position: relative;
+    }
+
+    h1:after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: var(--bright);
+      margin: 15px auto 30px;
+      border-radius: 2px;
+    }
+
+    section h2 {
+      color: var(--secondary);
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 8px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      background: white;
+      color: var(--text);
+      font-size: 1rem;
+      transition: all 0.3s;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #addBtn {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    #addBtn:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(67, 97, 238, 0.2);
+    }
+
+    hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(to right, var(--accent), var(--primary));
+      margin: 40px 0;
+      opacity: 0.2;
+    }
+
+    .auction-item {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      border: 1px solid #eee;
+      transition: all 0.3s;
+    }
+
+    .auction-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .auction-item h3 {
+      font-size: 1.5rem;
+      color: var(--secondary);
+      margin-bottom: 10px;
+    }
+
+    .auction-image {
+      max-width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin: 10px 0;
+      border: 1px solid #eee;
+      background: #f9f9f9;
+      padding: 10px;
+    }
+
+    .auction-item p {
+      color: var(--text-light);
+      margin: 5px 0;
+      line-height: 1.5;
+    }
+
+    .auction-item strong {
+      color: var(--text);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .edit-btn {
+      background-color: var(--bright);
+      color: var(--text);
+      flex: 1;
+    }
+
+    .edit-btn:hover {
+      background-color: #ffaa00;
+      transform: translateY(-2px);
+    }
+
+    .delete-btn {
+      background-color: var(--danger);
+      color: white;
+      flex: 1;
+    }
+
+    .delete-btn:hover {
+      background-color: #e5177a;
+      transform: translateY(-2px);
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      padding: 8px 0;
+    }
+
+    a:hover {
+      color: var(--secondary);
+      transform: translateX(-3px);
+    }
+
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      animation: modalFadeIn 0.3s;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal h2 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    #saveEditBtn {
+      background-color: var(--success);
+      color: white;
+    }
+
+    #saveEditBtn:hover {
+      background-color: #3d8b40;
+    }
+
+    .close-btn {
+      background-color: var(--text-light);
+      color: white;
+    }
+
+    .close-btn:hover {
+      background-color: #7a8596;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 25px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      section h2 {
+        font-size: 1.5rem;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Panel</h1>
+
+    <section>
+      <h2>Add Auction</h2>
+      <input type="text" id="itemName" placeholder="Item Name" required />
+      <textarea id="itemDesc" placeholder="Item Description" rows="4" required></textarea>
+      <input type="text" id="imageUrl" placeholder="Image URL" required />
+      <input type="number" id="startBid" placeholder="Starting Bid ₹" required />
+      <input type="text" id="duration" placeholder="Auction Duration (in hours)" required />
+      <button id="addBtn">Add Auction</button>
+    </section>
+
+    <hr />
+
+    <section>
+      <h2>Manage Auctions</h2>
+      <div id="auctionList"></div>
+    </section>
+
+    <a href="index.html">← Back to Home</a>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <h2>Edit Auction</h2>
+      <input type="text" id="editName" placeholder="New Item Name" />
+      <textarea id="editDesc" placeholder="New Description"></textarea>
+      <input type="text" id="editImageUrl" placeholder="New Image URL" />
+      <input type="number" id="editBid" placeholder="New Starting Bid ₹" />
+      <input type="text" id="editDuration" placeholder="New Duration (in hours)" />
+      <div class="modal-actions">
+        <button id="saveEditBtn">Save Changes</button>
+        <button class="close-btn" onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, doc,
+      deleteDoc, updateDoc, onSnapshot
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB3I-4nBT08ZFXO-dxdABqmCKa94SBUOgc",
+      authDomain: "auction-hive-c9879.firebaseapp.com",
+      projectId: "auction-hive-c9879",
+      storageBucket: "auction-hive-c9879.appspot.com",
+      messagingSenderId: "558929162744",
+      appId: "1:558929162744:web:a16c038f136a1d6cc3660d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auctionCollection = collection(db, "Auctions");
+
+    document.getElementById("addBtn").addEventListener("click", async () => {
+      const name = document.getElementById("itemName").value.trim();
+      const desc = document.getElementById("itemDesc").value.trim();
+      const imageUrl = document.getElementById("imageUrl").value.trim();
+      const startBid = document.getElementById("startBid").value.trim();
+      const duration = document.getElementById("duration").value.trim();
+
+      if (!name || !desc || !imageUrl || !startBid || !duration || isNaN(duration) || Number(duration) <= 0) {
+        alert("Please fill all fields with valid data.");
+        return;
+      }
+
+      const currentDate = new Date();
+      const endDate = new Date();
+      endDate.setHours(currentDate.getHours() + Number(duration));
+
+      try {
+        await addDoc(auctionCollection, {
+          title: name,
+          description: desc,
+          imageUrl: imageUrl,
+          startingBid: startBid,
+          startTime: currentDate.toLocaleString('en-US', { hour12: true }),
+          endTime: endDate.toLocaleString('en-US', { hour12: true })
+        });
+
+        // Clear form fields
+        document.getElementById("itemName").value = "";
+        document.getElementById("itemDesc").value = "";
+        document.getElementById("imageUrl").value = "";
+        document.getElementById("startBid").value = "";
+        document.getElementById("duration").value = "";
+
+        alert("Auction added successfully!");
+      } catch (err) {
+        alert("Error adding auction: " + err.message);
+      }
+    });
+
+    const modal = document.getElementById("editModal");
+    const editName = document.getElementById("editName");
+    const editDesc = document.getElementById("editDesc");
+    const editImageUrl = document.getElementById("editImageUrl");
+    const editBid = document.getElementById("editBid");
+    const editDuration = document.getElementById("editDuration");
+    let currentEditId = null;
+
+    document.getElementById("saveEditBtn").addEventListener("click", async () => {
+      const name = editName.value.trim();
+      const desc = editDesc.value.trim();
+      const imageUrl = editImageUrl.value.trim();
+      const bid = editBid.value.trim();
+      const duration = editDuration.value.trim();
+
+      if (!name || !desc || !imageUrl || !bid || isNaN(duration) || Number(duration) <= 0) {
+        alert("Please fill all fields properly.");
+        return;
+      }
+
+      const now = new Date();
+      const newEnd = new Date();
+      newEnd.setHours(now.getHours() + Number(duration));
+
+      try {
+        await updateDoc(doc(auctionCollection, currentEditId), {
+          title: name,
+          description: desc,
+          imageUrl: imageUrl,
+          startingBid: bid,
+          startTime: now.toLocaleString('en-US'),
+          endTime: newEnd.toLocaleString('en-US')
+        });
+        alert("Auction updated successfully!");
+        modal.style.display = "none";
+      } catch (err) {
+        alert("Error updating: " + err.message);
+      }
+    });
+
+    onSnapshot(auctionCollection, (snapshot) => {
+      const list = document.getElementById("auctionList");
+      list.innerHTML = "";
+
+      if (snapshot.empty) {
+        list.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-light);">No auctions found. Add your first auction above!</div>';
+        return;
+      }
+
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const div = document.createElement("div");
+        div.className = "auction-item";
+        div.innerHTML = `
+          <h3>${data.title}</h3>
+          ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.title}" class="auction-image">` : ''}
+          <p>${data.description}</p>
+          <p><strong>Starting Bid:</strong> ₹${data.startingBid}</p>
+          <p><strong>Start Time:</strong> ${data.startTime}</p>
+          <p><strong>End Time:</strong> ${data.endTime}</p>
+          <div class="actions">
+            <button class="edit-btn" data-id="${docSnap.id}">Edit</button>
+            <button class="delete-btn" data-id="${docSnap.id}">Delete</button>
+          </div>
+        `;
+
+        div.querySelector(".delete-btn").addEventListener("click", async () => {
+          if (confirm(`Are you sure you want to delete "${data.title}"?`)) {
+            await deleteDoc(doc(auctionCollection, docSnap.id));
+          }
+        });
+
+        div.querySelector(".edit-btn").addEventListener("click", () => {
+          currentEditId = docSnap.id;
+          editName.value = data.title;
+          editDesc.value = data.description;
+          editImageUrl.value = data.imageUrl || '';
+          editBid.value = data.startingBid;
+          editDuration.value = "1";
+          modal.style.display = "flex";
+        });
+
+        list.appendChild(div);
+      });
+    });
+  </script>
+</body>
+</html>
